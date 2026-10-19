@@ -18,7 +18,7 @@
 - **Institution:** Indira Gandhi Delhi Technical University for Women (IGDTUW)
 - **Competition:** S&P Global & CRISIL Campus Hackathon 2026
 - **Live Web Application:** [https://risklens-ai-snowy.vercel.app](https://risklens-ai-snowy.vercel.app)
-- **Live Demo Video:** `[Insert 5-Minute Demo Video URL]` *(Placeholder to be filled)*
+- **Live Demo Video:** `[https://youtu.be/2abg1PepiOc](https://youtu.be/2abg1PepiOc)`
 - **Pitch Deck / Presentation:** [RiskLens AI Presentation Deck (PDF)](docs/RiskLens_AI_Presentation_Deck.pdf)
 - **Public Repository:** `https://github.com/anushkaaaguptaa/igdtuw-anushka-gupta-hackathon`
 
