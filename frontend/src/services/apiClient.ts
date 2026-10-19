@@ -24,6 +24,10 @@ const getBaseUrl = (): string => {
   if (url && typeof url === 'string') {
     return url.replace(/\/+$/, '');
   }
+  // Production default for Vercel deployment: connect to live Render backend
+  if (import.meta.env.PROD) {
+    return 'https://risklens-backend-3ddp.onrender.com';
+  }
   return 'http://localhost:8000';
 };
 
