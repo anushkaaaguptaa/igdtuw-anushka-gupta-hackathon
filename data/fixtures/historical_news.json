@@ -1,0 +1,79 @@
+[
+  {
+    "source_id": "hist_svb_001",
+    "title": "Silicon Valley Bank Closes After Insolvent Bank Run and Deposit Outflows",
+    "url": "https://www.reuters.com/business/finance/silicon-valley-bank-shuts-down-fdic-2023-03-10/",
+    "publisher": "Reuters Archive",
+    "published_at": "2023-03-10T16:30:00Z",
+    "raw_content": "California banking regulators shut down Silicon Valley Bank on Friday and appointed the Federal Deposit Insurance Corporation (FDIC) as receiver, following a historic $42 billion deposit run that triggered systemic liquidity contagion fears across regional lenders.",
+    "language": "en",
+    "metadata": {
+      "category": "CREDIT_EVENT",
+      "primary_ticker": "SIVBQ"
+    }
+  },
+  {
+    "source_id": "hist_crwd_002",
+    "title": "Faulty CrowdStrike Falcon Update Sparks Global IT Outage Grounding Flights",
+    "url": "https://www.bloomberg.com/news/articles/2024-07-19/crowdstrike-update-crashes-windows-systems-globally",
+    "publisher": "Bloomberg Archive",
+    "published_at": "2024-07-19T08:15:00Z",
+    "raw_content": "A defective content configuration update deployed by cybersecurity firm CrowdStrike triggered Blue Screen of Death crashes across millions of Microsoft Windows enterprise systems, halting commercial airlines, hospital scheduling, and emergency dispatch systems worldwide.",
+    "language": "en",
+    "metadata": {
+      "category": "PRODUCT_OPERATIONAL",
+      "primary_ticker": "CRWD"
+    }
+  },
+  {
+    "source_id": "hist_msft_003",
+    "title": "FTC Opens Formal Inquiry Into Microsoft and Alphabet Cloud AI Partnerships",
+    "url": "https://www.wsj.com/tech/ai/ftc-launches-antitrust-inquiry-into-big-tech-ai-investments-2024-01-25",
+    "publisher": "Wall Street Journal Archive",
+    "published_at": "2024-01-25T14:00:00Z",
+    "raw_content": "The Federal Trade Commission issued orders to Microsoft, Alphabet, and Amazon requiring detailed submissions regarding their multi-billion dollar strategic agreements and exclusive computing alliances with leading generative artificial intelligence startups.",
+    "language": "en",
+    "metadata": {
+      "category": "REGULATORY_ACTION",
+      "primary_ticker": "MSFT"
+    }
+  },
+  {
+    "source_id": "hist_nvda_004",
+    "title": "NVIDIA Reports Record Q4 Revenue Surging 265% on Data Center AI Accelerator Demand",
+    "url": "https://www.cnbc.com/2024/02/21/nvidia-nvda-earnings-report-q4-2024.html",
+    "publisher": "CNBC Archive",
+    "published_at": "2024-02-21T21:05:00Z",
+    "raw_content": "NVIDIA Corporation shattered Wall Street estimates with fiscal fourth-quarter revenue surging 265% year-over-year to $22.1 billion, driven by explosive demand for its Hopper GPU architecture from hyperscale cloud providers and AI enterprises.",
+    "language": "en",
+    "metadata": {
+      "category": "EARNINGS_FINANCIAL_RESULTS",
+      "primary_ticker": "NVDA"
+    }
+  },
+  {
+    "source_id": "hist_fed_005",
+    "title": "Federal Reserve Raises Benchmark Interest Rate to 22-Year High to Curb Persistent Inflation",
+    "url": "https://www.nytimes.com/2023/07/26/business/economy/fed-interest-rates-inflation.html",
+    "publisher": "New York Times Archive",
+    "published_at": "2023-07-26T18:00:00Z",
+    "raw_content": "The Federal Open Market Committee raised the federal funds target rate by a quarter percentage point to a range of 5.25% to 5.50%, reiterating that additional policy firming may be appropriate to return CPI inflation to the central bank's 2% objective.",
+    "language": "en",
+    "metadata": {
+      "category": "MACROECONOMIC"
+    }
+  },
+  {
+    "source_id": "hist_aapl_006",
+    "title": "Department of Justice Sues Apple Over Illegal Smartphone Operating System Monopoly",
+    "url": "https://www.justice.gov/opa/pr/justice-department-sues-apple-monopolizing-smartphone-markets",
+    "publisher": "US DOJ Public Affairs",
+    "published_at": "2024-03-21T15:30:00Z",
+    "raw_content": "The U.S. Department of Justice, joined by 16 state attorneys general, filed a civil antitrust lawsuit against Apple Inc. alleging violations of Section 2 of the Sherman Act through anticompetitive software restrictions on its iPhone ecosystem.",
+    "language": "en",
+    "metadata": {
+      "category": "REGULATORY_ACTION",
+      "primary_ticker": "AAPL"
+    }
+  }
+]

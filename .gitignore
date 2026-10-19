@@ -1,0 +1,135 @@
+# ==========================================
+# RiskLens AI — Submission Root .gitignore
+# S&P Global & CRISIL Campus Hackathon 2026
+# ==========================================
+
+# ------------------------------------------
+# Python & Bytecode
+# ------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ------------------------------------------
+# Virtual Environments
+# ------------------------------------------
+.venv/
+backend/.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ------------------------------------------
+# Testing & Code Quality Caches
+# ------------------------------------------
+.pytest_cache/
+backend/.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.ruff_cache/
+.mypy_cache/
+
+# ------------------------------------------
+# Frontend (React 19 / Vite / Node)
+# ------------------------------------------
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.vite/
+frontend/.vite/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+
+# ------------------------------------------
+# Runtime Databases & Logs
+# ------------------------------------------
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+backend/risklens.db
+backend/risklens.db-journal
+backend/risklens.db-wal
+backend/risklens.db-shm
+*.log
+logs/
+temp/
+tmp/
+
+# ------------------------------------------
+# Machine Learning & Model Weight Caches
+# ------------------------------------------
+.cache/
+huggingface/
+transformers_cache/
+checkpoints/
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+
+# ------------------------------------------
+# Environment Variables & Secrets
+# ------------------------------------------
+.env
+*.env
+backend/.env
+frontend/.env
+*.local
+
+# EXCEPTION: Always commit safe sanitized .env.example templates
+!*.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# ------------------------------------------
+# Operating System & IDE
+# ------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~

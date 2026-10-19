@@ -1,0 +1,92 @@
+{
+  "portfolio_id": "port_wholesale_banking",
+  "name": "Synthetic Wholesale Banking Credit & Treasury Portfolio",
+  "description": "Representative calibrated wholesale-banking synthetic portfolio encompassing corporate loans (IFRS 9 / Basel II ECL), sovereign debt (duration-convexity), corporate bonds (spread duration), public equities, and protective derivative hedges.",
+  "base_currency": "USD",
+  "baseline_carrying_value": 16993750.00,
+  "calibration_basis": "S&P Global & CRISIL Wholesale Banking Stress Testing Benchmark",
+  "holdings": [
+    {
+      "ticker": "ACME_CORP_LOAN",
+      "asset_type": "corporate_loan",
+      "issuer": "Acme Industrial Holdings",
+      "sector": "Industrials",
+      "carrying_value": 4943750.00,
+      "notional_ead": 5000000.00,
+      "accounting_standard": "amortized_cost",
+      "credit_parameters": {
+        "ead": 5000000.0,
+        "pd": 0.025,
+        "lgd": 0.45,
+        "maturity_years": 3.5,
+        "baseline_ecl": 56250.00
+      },
+      "pricing_notes": "Carrying value equals EAD ($5.0M) minus baseline ECL ($56,250). Market haircuts are strictly excluded to avoid double-counting."
+    },
+    {
+      "ticker": "US_TREASURY_10Y",
+      "asset_type": "government_bond",
+      "issuer": "US Department of the Treasury",
+      "sector": "Government",
+      "carrying_value": 4000000.00,
+      "notional": 4000000.00,
+      "duration_convexity": {
+        "modified_duration": 7.8,
+        "convexity": 65.0,
+        "coupon_pct": 4.25,
+        "rating": "AAA"
+      },
+      "pricing_notes": "Repriced via 2nd-order Taylor expansion: dP/P = -D_mod * dy + 0.5 * C * (dy)^2."
+    },
+    {
+      "ticker": "MS_CORP_BOND_5Y",
+      "asset_type": "corporate_bond",
+      "issuer": "Morgan Stanley",
+      "sector": "Financials",
+      "carrying_value": 3000000.00,
+      "notional": 3000000.00,
+      "spread_parameters": {
+        "modified_duration": 4.2,
+        "credit_spread_bps": 120.0,
+        "coupon_pct": 5.10,
+        "rating": "A"
+      },
+      "pricing_notes": "Repriced via joint yield curve shift and credit spread widening sensitivity."
+    },
+    {
+      "ticker": "NVDA",
+      "asset_type": "equity",
+      "issuer": "NVIDIA Corporation",
+      "sector": "Information Technology",
+      "carrying_value": 2600000.00,
+      "shares": 20000.0,
+      "current_price": 130.00,
+      "market_cap_tier": "mega_cap",
+      "beta": 1.45
+    },
+    {
+      "ticker": "AAPL",
+      "asset_type": "equity",
+      "issuer": "Apple Inc.",
+      "sector": "Information Technology",
+      "carrying_value": 2200000.00,
+      "shares": 10000.0,
+      "current_price": 220.00,
+      "market_cap_tier": "mega_cap",
+      "beta": 1.05
+    },
+    {
+      "ticker": "SPX_PUT_HEDGE",
+      "asset_type": "derivative",
+      "issuer": "CBOE Exchange",
+      "sector": "Financials",
+      "carrying_value": 250000.00,
+      "contract_count": 1000.0,
+      "contract_price": 250.00,
+      "underlying_notional": 10000000.00,
+      "delta": -0.35,
+      "hedge_type": "protective_put",
+      "pricing_notes": "Delta hedge decoupling underlying protected notional ($10.0M) from option premium carrying value ($250,000). Offsets downside market equity losses."
+    }
+  ]
+}
