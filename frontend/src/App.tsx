@@ -31,12 +31,14 @@ export const App: React.FC = () => {
   // Active risk signal triggering an automated scenario simulation
   const [activeTriggerSignal, setActiveTriggerSignal] = useState<RiskSignalRead | null>(null);
 
-  const checkHealth = async () => {
+  const checkHealth = React.useCallback(async (isInitial = false) => {
     setHealthLoading(true);
     setHealthError(null);
     try {
-      const data = await healthService.getHealth();
+      // 60s timeout on initial/cold-start probe to allow Render free tier to spin up
+      const data = await healthService.getHealth(isInitial ? 60000 : 25000);
       setHealth(data);
+      setHealthError(null);
     } catch (err) {
       if (err instanceof ApiError) {
         setHealthError(err.detail);
@@ -49,36 +51,24 @@ export const App: React.FC = () => {
     } finally {
       setHealthLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
-    healthService
-      .getHealth()
-      .then((data) => {
-        if (isMounted) {
-          setHealth(data);
-          setHealthLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          if (err instanceof ApiError) {
-            setHealthError(err.detail);
-          } else if (err instanceof Error) {
-            setHealthError(err.message);
-          } else {
-            setHealthError('Unknown network connection error');
-          }
-          setHealth(null);
-          setHealthLoading(false);
-        }
-      });
+    checkHealth(true);
+
+    // Continuous keep-alive & cold-start auto-reconnect interval
+    const interval = setInterval(() => {
+      if (isMounted) {
+        checkHealth(false);
+      }
+    }, 25000);
 
     return () => {
       isMounted = false;
+      clearInterval(interval);
     };
-  }, []);
+  }, [checkHealth]);
 
   // Handler for Signal-to-Scenario Automated Trigger
   const handleTriggerStressForSignal = (signal: RiskSignalRead) => {
@@ -128,7 +118,7 @@ export const App: React.FC = () => {
                 </div>
               </div>
             </div>
-            <button onClick={checkHealth} className="btn btn-outline" style={{ fontSize: '0.75rem' }} type="button">
+            <button onClick={() => checkHealth(true)} className="btn btn-outline" style={{ fontSize: '0.75rem' }} type="button">
               Retry Connection
             </button>
           </div>

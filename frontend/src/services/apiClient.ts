@@ -19,16 +19,35 @@ export class ApiError extends Error {
   }
 }
 
-const getBaseUrl = (): string => {
+export const DEFAULT_RENDER_URL = 'https://risklens-backend-3ddp.onrender.com';
+export const DEFAULT_TUNNEL_URL = 'https://sees-legislature-scoop-friend.trycloudflare.com';
+
+export const getBaseUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const override = localStorage.getItem('risklens_api_url');
+    if (override && override.trim()) {
+      return override.trim().replace(/\/+$/, '');
+    }
+  }
   const url = import.meta.env.VITE_API_BASE_URL;
-  if (url && typeof url === 'string') {
-    return url.replace(/\/+$/, '');
+  if (url && typeof url === 'string' && url.trim()) {
+    return url.trim().replace(/\/+$/, '');
   }
   // Production default for Vercel deployment: connect to live Render backend
   if (import.meta.env.PROD) {
-    return 'https://risklens-backend-3ddp.onrender.com';
+    return DEFAULT_RENDER_URL;
   }
   return 'http://localhost:8000';
+};
+
+export const setBaseUrlOverride = (url: string | null): void => {
+  if (typeof window !== 'undefined') {
+    if (url && url.trim()) {
+      localStorage.setItem('risklens_api_url', url.trim().replace(/\/+$/, ''));
+    } else {
+      localStorage.removeItem('risklens_api_url');
+    }
+  }
 };
 
 export const API_BASE_URL = getBaseUrl();
@@ -39,9 +58,10 @@ interface RequestOptions extends RequestInit {
 }
 
 export async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-  const { timeoutMs = 25000, params, headers, ...customConfig } = options;
+  const { timeoutMs = 45000, params, headers, ...customConfig } = options;
+  const baseUrl = getBaseUrl();
 
-  let url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  let url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   if (params) {
     const searchParams = new URLSearchParams();
@@ -113,7 +133,7 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
     }
 
     const networkMsg = error instanceof Error ? error.message : 'Unknown network failure';
-    throw new ApiError(0, 'Network Error', `Could not connect to RiskLens AI backend at ${API_BASE_URL}. (${networkMsg})`, url);
+    throw new ApiError(0, 'Network Error', `Could not connect to RiskLens AI backend at ${baseUrl}. (${networkMsg})`, url);
   }
 }
 
