@@ -141,6 +141,16 @@ class FinBertSentimentModel:
             return self._load_successful
 
         self._load_attempted = True
+        
+        try:
+            from app.config import settings
+            if getattr(settings, "INFERENCE_MODE", "") in ("mock", "lexicon_fallback"):
+                logger.info("Inference mode is configured to mock/lexicon_fallback. Skipping neural model weights load.")
+                self._load_successful = False
+                return False
+        except Exception:
+            pass
+
         try:
             import torch
             from transformers import AutoTokenizer, AutoModelForSequenceClassification

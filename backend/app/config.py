@@ -1,3 +1,4 @@
+import os
 from typing import List
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
     
     # Model & Ingestion configuration
     INFERENCE_MODE: str = Field(
-        default="neural_live",
+        default="lexicon_fallback" if os.getenv("RENDER") else "neural_live",
         description="Active inference mode: 'neural_live', 'lexicon_fallback', or 'mock'"
     )
     DEFAULT_MODEL_VERSION: str = "ProsusAI/finbert+keyword-taxonomy-v1"
