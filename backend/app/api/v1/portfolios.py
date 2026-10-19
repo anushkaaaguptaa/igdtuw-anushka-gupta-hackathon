@@ -77,6 +77,11 @@ def list_portfolios(db: Session = Depends(get_db)):
     portfolios = db.query(Portfolio).options(
         joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
     ).all()
+    if not portfolios:
+        seed_wholesale_banking_portfolio(db)
+        portfolios = db.query(Portfolio).options(
+            joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
+        ).all()
     return [_calculate_portfolio_details(p) for p in portfolios]
 
 
@@ -145,6 +150,12 @@ def get_portfolio(portfolio_id: str, db: Session = Depends(get_db)):
         joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
     ).filter(Portfolio.id == portfolio_id).first()
 
+    if not portfolio and portfolio_id == "port_wholesale_banking":
+        seed_wholesale_banking_portfolio(db)
+        portfolio = db.query(Portfolio).options(
+            joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
+        ).filter(Portfolio.id == portfolio_id).first()
+
     if not portfolio:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -160,6 +171,12 @@ def get_portfolio_exposure(portfolio_id: str, db: Session = Depends(get_db)):
     portfolio = db.query(Portfolio).options(
         joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
     ).filter(Portfolio.id == portfolio_id).first()
+
+    if not portfolio and portfolio_id == "port_wholesale_banking":
+        seed_wholesale_banking_portfolio(db)
+        portfolio = db.query(Portfolio).options(
+            joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
+        ).filter(Portfolio.id == portfolio_id).first()
 
     if not portfolio:
         raise HTTPException(

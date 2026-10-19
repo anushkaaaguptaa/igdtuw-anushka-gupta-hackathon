@@ -92,6 +92,13 @@ def simulate_stress_test(req: StressTestSimulationRequest, db: Session = Depends
         joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
     ).filter(Portfolio.id == req.portfolio_id).first()
 
+    if not portfolio and req.portfolio_id == "port_wholesale_banking":
+        from app.api.v1.portfolios import seed_wholesale_banking_portfolio
+        seed_wholesale_banking_portfolio(db)
+        portfolio = db.query(Portfolio).options(
+            joinedload(Portfolio.assets).joinedload(PortfolioAsset.entity)
+        ).filter(Portfolio.id == req.portfolio_id).first()
+
     if not portfolio:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

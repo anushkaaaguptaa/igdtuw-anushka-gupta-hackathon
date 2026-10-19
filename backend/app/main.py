@@ -15,6 +15,20 @@ async def lifespan(app: FastAPI):
     try:
         init_db()
         logger.info("Database initialized successfully.")
+        
+        # Ensure default wholesale benchmark portfolio exists on startup
+        from app.core.database import SessionLocal
+        from app.models.db_models import Portfolio
+        from app.api.v1.portfolios import seed_wholesale_banking_portfolio
+        
+        db = SessionLocal()
+        try:
+            existing = db.query(Portfolio).filter(Portfolio.id == "port_wholesale_banking").first()
+            if not existing:
+                logger.info("Auto-seeding default benchmark wholesale banking portfolio...")
+                seed_wholesale_banking_portfolio(db)
+        finally:
+            db.close()
     except Exception as exc:
         logger.error(f"Failed to initialize database: {exc}")
     yield
