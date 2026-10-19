@@ -45,6 +45,12 @@ When macroeconomic shocks occur (such as sudden central bank rate hikes, geopoli
 
 ## System Architecture
 
+![RiskLens AI End-to-End System Architecture](docs/architecture.png)
+
+> **Architecture Artifacts:**
+> - **High-Resolution Diagram Export:** [`docs/architecture.png`](docs/architecture.png)
+> - **Editable Mermaid Source Specification:** [`docs/architecture.mmd`](docs/architecture.mmd)
+
 ```mermaid
 graph TD
     subgraph Data Layer

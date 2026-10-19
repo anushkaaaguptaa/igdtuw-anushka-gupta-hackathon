@@ -1,0 +1,143 @@
+%% ============================================================================
+%% RiskLens AI — End-to-End System Architecture Diagram
+%% S&P Global & CRISIL Campus Hackathon 2026 Submission
+%% ============================================================================
+
+flowchart TB
+    %% ------------------------------------------------------------------------
+    %% STYLES & CLASSES
+    %% ------------------------------------------------------------------------
+    classDef extSource fill:#1e293b,stroke:#64748b,stroke-width:2px,color:#f8fafc;
+    classDef ingestion fill:#0f2b48,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
+    classDef nlpEngine fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#f8fafc;
+    classDef fallback fill:#451a03,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fef3c7;
+    classDef database fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#f0fdf4;
+    classDef stressEngine fill:#4c0519,stroke:#fb7185,stroke-width:2px,color:#fff1f2;
+    classDef frontend fill:#172554,stroke:#60a5fa,stroke-width:2px,color:#eff6ff;
+
+    %% ------------------------------------------------------------------------
+    %% 1. EXTERNAL DATA SOURCES
+    %% ------------------------------------------------------------------------
+    subgraph S_EXT [" 1. External Ingestion Sources & Historical Replay "]
+        SRC_GDELT["GDELT 2.0 Doc API<br/><i>(Global Geopolitical & Macro REST)</i>"]:::extSource
+        SRC_RSS["Financial RSS Feeds<br/><i>(Reuters, Bloomberg, CNBC, FT)</i>"]:::extSource
+        SRC_REPLAY["Historical Replay Fixtures<br/><i>(data/fixtures/historical_news.json)</i>"]:::extSource
+    end
+
+    %% ------------------------------------------------------------------------
+    %% 2. INGESTION & NORMALIZATION PIPELINE
+    %% ------------------------------------------------------------------------
+    subgraph S_INGEST [" 2. Data Ingestion Service (backend/app/services/ingestion/) "]
+        ADAPT_GDELT["GdeltDocAdapter<br/><i>Bounded limit & timeout handling</i>"]:::ingestion
+        ADAPT_RSS["FinancialRssAdapter<br/><i>feedparser XML normalization</i>"]:::ingestion
+        ADAPT_REPLAY["ReplayFixtureAdapter<br/><i>Curated offline market events</i>"]:::ingestion
+        
+        COORD_INGEST["IngestionCoordinator<br/><i>Batch coordination & pipeline orchestration</i>"]:::ingestion
+        DEDUP_HASH["SHA-256 Deduplication Engine<br/><i>Hash: canonical URL + title + publisher</i>"]:::ingestion
+    end
+
+    %% ------------------------------------------------------------------------
+    %% 3. NLP RISK INTELLIGENCE PIPELINE
+    %% ------------------------------------------------------------------------
+    subgraph S_NLP [" 3. NLP Risk Intelligence Engine (backend/app/services/nlp/) "]
+        NLP_COORD["NLPPipelineCoordinator<br/><i>Provenance tracking & batch processing</i>"]:::nlpEngine
+        
+        subgraph S_NLP_MODELS [" Inference Pipelines "]
+            FINBERT["FinBERT Transformer<br/><b>ProsusAI/finbert</b><br/><i>Continuous Sentiment: [-1.0, +1.0]</i>"]:::nlpEngine
+            FALLBACK_LEX["Loughran-McDonald Fallback<br/><i>Keyword lexicon & token weighting</i>"]:::fallback
+            CLASSIFIER["8-Category Event Classifier<br/><i>Geopolitical, Macro, Credit, Regulatory, etc.</i>"]:::nlpEngine
+            RESOLVER["Entity Resolution Engine<br/><i>Ticker extraction & metadata linking</i>"]:::nlpEngine
+            IMPACT["Deterministic Impact Scorer<br/><b>Score: 1 - 10</b><br/><i>0.45 Severity + 0.30 Sentiment + 0.25 Scope</i>"]:::nlpEngine
+        end
+    end
+
+    %% ------------------------------------------------------------------------
+    %% 4. PERSISTENCE LAYER
+    %% ------------------------------------------------------------------------
+    subgraph S_DATA [" 4. Relational Persistence Layer (SQLite: risklens.db) "]
+        TBL_ARTICLES[("articles<br/><i>id, dedup_key, source, title, url</i>")]:::database
+        TBL_SIGNALS[("risk_signals<br/><i>sentiment, category, impact, provenance</i>")]:::database
+        TBL_ENTITIES[("entities & article_entities<br/><i>ticker, name, sector, asset_class</i>")]:::database
+        TBL_PORTFOLIOS[("portfolios & portfolio_assets<br/><i>holdings, notional, pricing attributes</i>")]:::database
+        TBL_RUNS[("stress_test_runs<br/><i>factor shocks, VaR/CVaR, asset loss audit</i>")]:::database
+    end
+
+    %% ------------------------------------------------------------------------
+    %% 5. STRESS TESTING & VALUATION ENGINE
+    %% ------------------------------------------------------------------------
+    subgraph S_STRESS [" 5. Portfolio Stress Testing & Risk Engine (backend/app/services/stress_testing/) "]
+        TRIGGER["Signal-to-Scenario Automation<br/><i>AutoTriggerService: Category -> Scenario shock mapping</i>"]:::stressEngine
+        
+        subgraph S_PORTFOLIO [" Synthetic Wholesale Banking Portfolio ($16.99M) "]
+            ASSET_LOAN["Commercial Loans (ACME_CORP_LOAN)<br/><b>Amortized Cost / Basel II ECL</b><br/><i>EAD $5.0M, PD 2.5%, LGD 45%</i>"]:::stressEngine
+            ASSET_TSY["Sovereign Treasuries (US_TREASURY_10Y)<br/><b>Duration-Convexity Expansion</b><br/><i>$4.0M, Mod Duration 7.8, Convexity 65.0</i>"]:::stressEngine
+            ASSET_BOND["Corporate Debt (MS_CORP_BOND_5Y)<br/><b>Spread Duration Sensitivity</b><br/><i>$3.0M, Mod Duration 4.2, Spread +120 bps</i>"]:::stressEngine
+            ASSET_EQ["Public Equities (NVDA, AAPL)<br/><b>Beta-Adjusted Market Haircuts</b><br/><i>$4.8M combined, Beta: 1.45 & 1.05</i>"]:::stressEngine
+            ASSET_HEDGE["Protective Put Hedge (SPX_PUT_HEDGE)<br/><b>Option Delta Hedging Cushion</b><br/><i>$10M notional vs $250k premium, Delta -0.35</i>"]:::stressEngine
+        end
+
+        VAL_ENGINE["Multi-Asset Valuation Engine<br/><i>Zero loan double-counting | Exact mathematical reconciliation</i>"]:::stressEngine
+        VAR_ENGINE["Monte Carlo VaR/CVaR Engine<br/><b>1,000 Draws via Cholesky Covariance Matrix</b><br/><i>10-Day 95% & 99% VaR and Expected Shortfall</i>"]:::stressEngine
+    end
+
+    %% ------------------------------------------------------------------------
+    %% 6. FRONTEND PRESENTATION LAYER
+    %% ------------------------------------------------------------------------
+    subgraph S_UI [" 6. Single Page Application (frontend/ - React 19 + TypeScript + Vite) "]
+        API_CLIENT["Centralized Typed API Client<br/><i>apiClient.ts: Axios/Fetch + error boundaries</i>"]:::frontend
+        
+        UI_DASH["Screen A: Overview Dashboard<br/><i>Executive KPIs, System Health, Loss Breakdown</i>"]:::frontend
+        UI_FEED["Screen B: Financial Intelligence Feed<br/><i>Live Feed, Provenance Badges, NLP Analyzer</i>"]:::frontend
+        UI_PORT["Screen C: Portfolio Management<br/><i>Wholesale Holdings, Sector Allocation, ECL View</i>"]:::frontend
+        UI_STRESS["Screen D: Stress Testing Workspace<br/><i>Scenario Selector, Sensitivity Sliders, Audit Runs</i>"]:::frontend
+    end
+
+    %% ------------------------------------------------------------------------
+    %% WORKFLOW & DATA FLOW CONNECTIONS
+    %% ------------------------------------------------------------------------
+    SRC_GDELT -->|Raw REST HTTP| ADAPT_GDELT
+    SRC_RSS -->|XML Feeds| ADAPT_RSS
+    SRC_REPLAY -->|Offline JSON| ADAPT_REPLAY
+
+    ADAPT_GDELT --> COORD_INGEST
+    ADAPT_RSS --> COORD_INGEST
+    ADAPT_REPLAY --> COORD_INGEST
+
+    COORD_INGEST --> DEDUP_HASH
+    DEDUP_HASH -->|Check Duplicate Key| TBL_ARTICLES
+    DEDUP_HASH -->|Persist New Normalized Article| TBL_ARTICLES
+
+    TBL_ARTICLES -->|Unprocessed Articles| NLP_COORD
+    NLP_COORD -->|Live Transformer Mode| FINBERT
+    NLP_COORD -.->|Fallback if No Model Weights| FALLBACK_LEX
+    NLP_COORD --> CLASSIFIER
+    NLP_COORD --> RESOLVER
+    
+    FINBERT --> IMPACT
+    FALLBACK_LEX -.-> IMPACT
+    CLASSIFIER --> IMPACT
+    RESOLVER --> IMPACT
+
+    IMPACT -->|Risk Signal with Provenance Metadata| TBL_SIGNALS
+    RESOLVER -->|Resolved Entity Links| TBL_ENTITIES
+
+    TBL_SIGNALS -->|Trigger Signals| TRIGGER
+    TRIGGER -->|Factor Shocks| VAL_ENGINE
+    
+    TBL_PORTFOLIOS -->|Baseline Holdings| S_PORTFOLIO
+    S_PORTFOLIO --> VAL_ENGINE
+    
+    VAL_ENGINE -->|Instrument Loss Decomposition| VAR_ENGINE
+    VAR_ENGINE -->|Persistent Run Snapshot| TBL_RUNS
+
+    %% API to UI Connections
+    TBL_ARTICLES -.->|REST /api/v1/ingest/articles| API_CLIENT
+    TBL_SIGNALS -.->|REST /api/v1/signals| API_CLIENT
+    TBL_PORTFOLIOS -.->|REST /api/v1/portfolios| API_CLIENT
+    TBL_RUNS -.->|REST /api/v1/stress-test/runs| API_CLIENT
+    VAL_ENGINE -.->|REST /api/v1/stress-test/simulate| API_CLIENT
+
+    API_CLIENT --> UI_DASH
+    API_CLIENT --> UI_FEED
+    API_CLIENT --> UI_PORT
+    API_CLIENT --> UI_STRESS
